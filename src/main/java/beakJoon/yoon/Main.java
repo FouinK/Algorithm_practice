@@ -1,68 +1,56 @@
 package beakJoon.yoon;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int arr[][];
-	static boolean check[];
+	static boolean visit[];
+	static ArrayList<Integer>[] arr;
+	static int computer, node;
+	static int answer;
 
-	public static void main(String[] args)   {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		Scanner sc = new Scanner(System.in);
+		computer = Integer.parseInt(st.nextToken());
 
-		int N = sc.nextInt();
-		int M = sc.nextInt();
-		int V = sc.nextInt();
 
-		arr = new int[N + 1][N + 1];
-		check = new boolean[N + 1];
+		arr = new ArrayList[computer + 1];
+		visit = new boolean[computer + 1];
 
-		for (int i = 0; i < M; i++) {
-			int s = sc.nextInt();
-			int e = sc.nextInt();
-
-			arr[s][e] = 1;
-			arr[e][s] = 1;
+		for (int i = 1; i < computer+1; i++) {
+			arr[i] = new ArrayList<>();
+			visit[i] = false;
 		}
-		getDfs(V);
-		System.out.println();
-		getBfs(V);
+
+		st = new StringTokenizer(br.readLine());
+		node = Integer.parseInt(st.nextToken());
+
+		for (int i = 0; i < node; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			arr[a].add(b);
+			arr[b].add(a);
+		}
+
+		dfs(1);
+		System.out.println(answer);
 	}
 
-	private static void getDfs(int start) {
-		check[start] = true;
-		System.out.print(start + " ");
-
-		for (int i = 1; i < arr.length; i++){
-			if (check[i] == false && arr[start][i] == 1) {
-				getDfs(i);
-			}
-		}
-	}
-
-	private static void getBfs(int start) {
-		getInitCheck();
-		Queue<Integer> queue = new LinkedList<>();
-		queue.offer(start);
-
-		while (!queue.isEmpty()) {
-			int poll = queue.poll();
-			System.out.print(poll + " ");
-			check[poll] = true;
-			for (int i = 1; i < arr.length; i++) {
-				if (poll != i && arr[poll][i] == 1 && check[i] == false) {
-					queue.offer(i);
-					check[i] =true;
-				}
+	public static void dfs(int start) {
+		visit[start] = true;
+		for (int i = 0; i < arr[start].size(); i++) {
+			int next = arr[start].get(i);
+			if (!visit[next]) {
+				answer++;
+				dfs(next);
 			}
 		}
 
-	}
-
-	private static void getInitCheck() {
-		Arrays.fill(check, false);
 	}
 }
