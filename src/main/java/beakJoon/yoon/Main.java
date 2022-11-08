@@ -3,54 +3,64 @@ package beakJoon.yoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
-	static boolean visit[];
-	static ArrayList<Integer>[] arr;
-	static int computer, node;
+	static int X, Y, K;
+	static boolean[][] visit;
+	static int[][] arr;
+	static int[] dx = {-1, 1, 0, 0};
+	static int[] dy = {0, 0, -1, 1};
 	static int answer;
-
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		computer = Integer.parseInt(st.nextToken());
+		int tc = Integer.parseInt(st.nextToken());
 
-
-		arr = new ArrayList[computer + 1];
-		visit = new boolean[computer + 1];
-
-		for (int i = 1; i < computer+1; i++) {
-			arr[i] = new ArrayList<>();
-			visit[i] = false;
-		}
-
-		st = new StringTokenizer(br.readLine());
-		node = Integer.parseInt(st.nextToken());
-
-		for (int i = 0; i < node; i++) {
+		for (int i = 0; i < tc; i++) {
+			answer = 0;
 			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			arr[a].add(b);
-			arr[b].add(a);
+			X = Integer.parseInt(st.nextToken());
+			Y = Integer.parseInt(st.nextToken());
+
+			arr = new int[Y][X];
+			visit = new boolean[Y][X];
+			K = Integer.parseInt(st.nextToken());
+			for (int j = 0; j < K; j++) {
+				st = new StringTokenizer(br.readLine());
+
+				int x = Integer.parseInt(st.nextToken());
+				int y = Integer.parseInt(st.nextToken());
+
+				arr[y][x] = 1;
+			}
+
+			for (int j = 0; j < Y; j++) {
+				for (int k = 0; k < X; k++) {
+					if (arr[j][k] == 1 && !visit[j][k]) {
+						dfs(j, k);
+						answer++;
+					}
+				}
+			}
+			System.out.println(answer);
 		}
 
-		dfs(1);
-		System.out.println(answer);
 	}
 
-	public static void dfs(int start) {
-		visit[start] = true;
-		for (int i = 0; i < arr[start].size(); i++) {
-			int next = arr[start].get(i);
-			if (!visit[next]) {
-				answer++;
-				dfs(next);
+	static void dfs(int y, int x) {
+		visit[y][x] = true;
+		for (int i = 0; i < 4; i++) {
+			int ry = y + dy[i];
+			int rx = x + dx[i];
+			if (ry >= 0 && rx >= 0 && ry < Y && rx < X) {
+				if (arr[ry][rx] == 1 && !visit[ry][rx]) {
+					dfs(ry, rx);
+				}
 			}
 		}
-
 	}
+
+
 }
