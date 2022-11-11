@@ -3,53 +3,42 @@ package beakJoon.yoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
-	static ArrayList<Integer>[] arr;
-	static boolean[] visit;
-	static int answer;
+	static int N, R, C, answer;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		int N = Integer.parseInt(st.nextToken());
-		int tc = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		R = Integer.parseInt(st.nextToken());
+		C = Integer.parseInt(st.nextToken());
 
-		arr = new ArrayList[N + 1];
-		visit = new boolean[N + 1];
+		partition(R, C, (int) Math.pow(2, N));
 
-		for (int i = 1; i <= N; i++) {
-			arr[i] = new ArrayList<>();
-			visit[i] = false;
-		}
-
-		for (int i = 0; i < tc; i++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-
-			arr[a].add(b);
-			arr[b].add(a);
-		}
-		for (int i = 1; i <= N; i++) {
-			if (!visit[i]) {
-				dfs(i);
-				answer++;
-			}
-		}
 		System.out.println(answer);
 	}
 
-	public static void dfs(int start) {
-		visit[start] = true;
-		for (int i = 0; i < arr[start].size(); i++) {
-			int next = arr[start].get(i);
-			if (!visit[next]) {
-				dfs(next);
-			}
+	public static void partition(int r, int c, int size) {
+		if (size == 1) {
+			return;
+		}
+		int halfSize = size / 2;
+		if (r < halfSize && c < halfSize) {
+			partition(r,c,halfSize);
+		} else if (r < halfSize && c >= halfSize) {
+			answer += (size * size) / 4;
+			partition(r, c - halfSize, halfSize);
+		} else if (r >= halfSize && c < halfSize) {
+			answer += ((size * size) / 4) * 2;
+			partition(r - halfSize, c, halfSize);
+		} else {
+			answer += ((size * size) / 4) * 3;
+			partition(r - halfSize, c - halfSize, halfSize);
 		}
 	}
+
+
 }
