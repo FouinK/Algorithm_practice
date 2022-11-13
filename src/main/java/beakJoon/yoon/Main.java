@@ -1,59 +1,62 @@
 package beakJoon.yoon;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
 
 public class Main {
 	static int[][] arr;
 	static int N;
-	static String answer = "";
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static int M;
+	static int[] location1 = {-1, 1, 0, 0};
+	static int[] location2 = {0, 0, -1, 1};
+	static boolean[][] visit;
+	static int answer = 1;
 
-		N = Integer.parseInt(br.readLine());
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 
-		arr = new int[N][N];
+		N = sc.nextInt();
+		M = sc.nextInt();
+
+		arr = new int[N][M];
+		visit = new boolean[N][M];
+		visit[0][0] = true;
 
 		for (int i = 0; i < N; i++) {
-			String cut = br.readLine();
-			for (int j = 0; j < N; j++) {
-				arr[i][j] = Integer.parseInt(String.valueOf(cut.charAt(j)));
+			String getInput = sc.next();
+			for (int j = 0; j < M; j++) {
+				arr[i][j] = Integer.parseInt(String.valueOf(getInput.charAt(j)));
 			}
 		}
 
-		partition(0, 0, N);
-
-		System.out.println(answer);
+		bfs(0, 0);
+		System.out.println(arr[N-1][M-1]);
 	}
 
-	public static void partition(int row, int col, int size) {
-		if (colorCheck(row, col, size)) {
-			answer += arr[row][col];
-			return;
-		}
+	public static void bfs(int row, int col) {
+		Queue<int[]> queue = new LinkedList<>();
+		queue.offer(new int[] {row, col});
 
-		int newSize = size / 2;
+		while (!queue.isEmpty()) {
+			int[] now = queue.poll();
+			int nowRow = now[0];
+			int nowCol = now[1];
+			for (int i = 0; i < 4; i++) {
+				int nextRow = nowRow - location1[i];
+				int nextCol = nowCol - location2[i];
 
-		answer += "(";
-		partition(row, col, newSize);
-		partition(row, col+newSize, newSize);
-		partition(row+newSize, col, newSize);
-		partition(row+newSize, col+newSize, newSize);
-		answer += ")";
-
-	}
-
-	public static boolean colorCheck(int row, int col, int size) {
-		int nowNum = arr[row][col];
-		for (int i = row; i < row + size; i++) {
-			for (int j = col; j < col + size; j++) {
-				if (nowNum != arr[i][j]) {
-					return false;
+				if (nextRow < 0 || nextRow >= N || nextCol < 0 || nextCol >= M) {
+					continue;
 				}
+
+				if (arr[nextRow][nextCol] == 0 || visit[nextRow][nextCol]) {
+					continue;
+				}
+				queue.offer(new int[]{nextRow, nextCol});
+				visit[nextRow][nextCol] = true;
+				arr[nextRow][nextCol] = arr[nowRow][nowCol]+1;
 			}
 		}
-		return true;
 	}
 }
