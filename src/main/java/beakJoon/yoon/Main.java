@@ -4,76 +4,78 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.StringTokenizer;
 
 public class Main {
-	static ArrayList<Integer>[] arr;
-	static boolean visit[];
-	static StringBuilder sb = new StringBuilder();
+	static int[][] arr;
+	static boolean visit[][];
+	static int N;
+	static int cnt = 0;
+	static int separateCnt;
+	static int[] dr = {-1, 1, 0, 0};
+	static int[] dc = {0, 0, -1, 1};
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		ArrayList<Integer> list = new ArrayList<>();
+		StringBuilder sb = new StringBuilder();
+		N = Integer.parseInt(br.readLine());
 
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		int start = Integer.parseInt(st.nextToken());
+		arr = new int[N][N];
+		visit = new boolean[N][N];
 
-		arr = new ArrayList[N + 1];
-		for (int i = 1; i <= N; i++) {
-			arr[i] = new ArrayList<>();
-		}
-
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(br.readLine());
-
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-
-			arr[a].add(b);
-			arr[b].add(a);
-		}
-
-		for (int i = 1; i <= N; i++) {
-			arr[i].sort((a, b) -> a - b);
-		}
-
-		visit = new boolean[N + 1];
-		dfs(start);
-		sb.append("\n");
-		visit = new boolean[N + 1];
-		bfs(start);
-
-		System.out.println(sb);
-
-	}
-
-	public static void dfs(int start) {
-		sb.append(start).append(" ");
-		visit[start] = true;
-		for (int i = 0; i < arr[start].size(); i++) {
-			int next = arr[start].get(i);
-			if (!visit[next]) {
-				dfs(next);
+		for (int i = 0; i < N; i++) {
+			String get = br.readLine();
+			for (int j = 0; j < N; j++) {
+				arr[i][j] = Integer.parseInt(String.valueOf(get.charAt(j)));
 			}
 		}
-	}
 
-	public static void bfs(int start) {
-		Queue<Integer> queue = new LinkedList<>();
-		queue.offer(start);
-		visit[start] = true;
-		while (!queue.isEmpty()) {
-			int now = queue.poll();
-			sb.append(now).append(" ");
-			for (int i = 0; i < arr[now].size(); i++) {
-				int next = arr[now].get(i);
-				if (!visit[next]) {
-					visit[next] = true;
-					queue.offer(next);
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (arr[i][j] == 1 && !visit[i][j]) {
+					separateCnt = 0;
+					cnt++;
+					list.add(bfs(i, j));
 				}
 			}
 		}
+		Collections.sort(list);
+
+		for (int i : list) {
+			sb.append(i).append("\n");
+		}
+
+		System.out.println(cnt);
+		System.out.println(sb);
+	}
+
+	public static int bfs(int row, int col) {
+		Queue<int[]> queue = new LinkedList<>();
+		queue.offer(new int[]{row, col});
+		visit[row][col] = true;
+		separateCnt++;
+		while (!queue.isEmpty()) {
+			int[] now = queue.poll();
+			int nowRow = now[0];
+			int nowCol = now[1];
+			for (int i = 0; i < 4; i++) {
+				int nextRow = nowRow + dr[i];
+				int nextCol = nowCol + dc[i];
+
+				if (nextRow >= N || nextCol >= N || nextRow < 0 || nextCol < 0) {
+					continue;
+				}
+
+				if (visit[nextRow][nextCol] || arr[nextRow][nextCol] == 0) {
+					continue;
+				}
+				visit[nextRow][nextCol] = true;
+				queue.offer(new int[]{nextRow, nextCol});
+				separateCnt++;
+			}
+		}
+		return separateCnt;
 	}
 }
