@@ -36,7 +36,7 @@ public class Main {
 		}
 
 		for (int i = 1; i <= N; i++) {
-			arr[i].sort((a, b) -> a - b);
+			arr[i].sort((a, b) -> a - b);		//Collections.sort(arr[i])도 가능
 		}
 
 		visit = new boolean[N + 1];
