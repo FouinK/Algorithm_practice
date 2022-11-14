@@ -6,35 +6,48 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int M;
+	static int[][] arr;
 	static int N;
-	static int x;
-	static int y;
 
 	public static void main(String[] args) throws IOException {
-		StringBuilder sb = new StringBuilder();
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int testCase = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		N = Integer.parseInt(st.nextToken());
+		arr = new int[N][N];
 
-		for (int i = 0; i < testCase; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			M = Integer.parseInt(st.nextToken());
-			N = Integer.parseInt(st.nextToken());
-			x = Integer.parseInt(st.nextToken()) - 1;
-			y = Integer.parseInt(st.nextToken()) - 1;
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
 
-			int answer = -1;
+		ployd();
 
-			for (int j = x; j < (M * N); j += M) {
-				if (j % N == y) {
-					answer = j + 1;
-					break;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				sb.append(arr[i][j]).append(" ");
+			}
+			sb.append("\n");
+		}
+
+		System.out.println(sb);
+
+	}
+
+	public static void ployd() {
+
+		for (int k = 0; k < N; k++) {
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					if (arr[i][k] == 1 && arr[k][j] == 1) {
+						arr[i][j] = 1;
+					}
 				}
 			}
-
-			sb.append(answer).append("\n");
 		}
-		System.out.println(sb);
+
 	}
 
 }
