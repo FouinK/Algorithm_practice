@@ -1,35 +1,40 @@
 package beakJoon.yoon;
 
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	static int M;
+	static int N;
+	static int x;
+	static int y;
+
+	public static void main(String[] args) throws IOException {
 		StringBuilder sb = new StringBuilder();
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int testCase = Integer.parseInt(br.readLine());
 
-		PriorityQueue<Integer> queue = new PriorityQueue<>((o1,o2)->{
-			if (Math.abs(o1) == Math.abs(o2)) {
-				return o1 - o2;
-			} else {
-				return Math.abs(o1) - Math.abs(o2);
-			}
-		});
-		int N = sc.nextInt();
+		for (int i = 0; i < testCase; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			M = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(st.nextToken());
+			x = Integer.parseInt(st.nextToken()) - 1;
+			y = Integer.parseInt(st.nextToken()) - 1;
 
-		for (int i = 0; i < N; i++) {
-			int value = sc.nextInt();
-			if (value != 0) {
-				queue.offer(value);
-			} else {
-				if (queue.isEmpty()) {
-					sb.append(0 + "\n");
-				} else {
-					sb.append(queue.poll()).append("\n");
+			int answer = -1;
+
+			for (int j = x; j < (M * N); j += M) {
+				if (j % N == y) {
+					answer = j + 1;
+					break;
 				}
 			}
-		}
 
+			sb.append(answer).append("\n");
+		}
 		System.out.println(sb);
 	}
+
 }
