@@ -3,87 +3,61 @@ package beakJoon.yoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-	static int col;
-	static int row;
-	static int height;
-	static int[][][] box;
-	static int[] dx = {-1, 1, 0, 0, 0, 0};
-	static int[] dy = {0, 0, -1, 1, 0, 0};
-	static int[] dz = {0, 0, 0, 0, 1, -1};
-	static Queue<int[]> queue = new LinkedList<>();
-	static int answer = Integer.MIN_VALUE;
+	static int[] cnt = new int[101];
+	static int[] ladderAndSnake = new int[101];
+	static boolean[] visit = new boolean[101];
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		col = Integer.parseInt(st.nextToken());
-		row = Integer.parseInt(st.nextToken());
-		height = Integer.parseInt(st.nextToken());
-		box = new int[height][row][col];
-		boolean noZero = true;
-		for (int k = 0; k < height; k++) {
-			for (int i = 0; i < row; i++) {
-				st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < col; j++) {
-					box[k][i][j] = Integer.parseInt(st.nextToken());
-					if (box[k][i][j] == 1) {
-						queue.offer(new int[]{k, i, j});
-					}
+		int ladderSize = Integer.parseInt(st.nextToken());
+		int snakeSize = Integer.parseInt(st.nextToken());
 
-					if (box[k][i][j] == 0) {
-						noZero = false;
-					}
-				}
-			}
+
+		for (int i = 0; i < ladderSize+snakeSize; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			ladderAndSnake[a] = b;
 		}
-
-		if (noZero) {
-			System.out.println(0);
-			return ;
-		}
-
 		bfs();
-		for (int[][] ints : box) {
-			for (int[] anInt : ints) {
-				for (int i : anInt) {
-					if (i == 0) {
-						System.out.println(-1);
-						return;
-					}
-				}
-			}
-		}
-		System.out.println(answer-1);
-
 
 	}
 
 	public static void bfs() {
+		Queue<Integer> queue = new LinkedList<>();
+		queue.offer(1);
+		cnt[1] = 0;
+		visit[1] = true;
 
 		while (!queue.isEmpty()) {
-			int[] poll = queue.poll();
-			int z = poll[0];
-			int x = poll[1];
-			int y = poll[2];
+			int nowLocation = queue.poll();
+			if (nowLocation == 100) {
+				System.out.println(cnt[100]);
+				return;
+			}
 
-			for (int i = 0; i < 6; i++) {
-				int spread_z = z + dz[i];
-				int spread_x = x + dx[i];
-				int spread_y = y + dy[i];
+			for (int i = 1; i < 7; i++) {
+				int nextLocation = nowLocation + i;
+				if (nextLocation < 101 && !visit[nextLocation] ) {
+					visit[nextLocation] = true;
 
-				if (spread_z>=0 && spread_z < height && spread_x >= 0 && spread_x < row && spread_y >= 0 && spread_y < col) {
-					if (box[spread_z][spread_x][spread_y] == 0) {
-						box[spread_z][spread_x][spread_y] = box[z][x][y] + 1;
-						queue.offer(new int[]{spread_z, spread_x, spread_y});
+					if (ladderAndSnake[nextLocation] > 0) {
+						if (!visit[ladderAndSnake[nextLocation]]) {
+							cnt[ladderAndSnake[nextLocation]] = cnt[nowLocation] + 1;
+							visit[ladderAndSnake[nextLocation]] = true;
+							queue.offer(ladderAndSnake[nextLocation]);
+						}
+					} else {
+						cnt[nextLocation] = cnt[nowLocation] + 1;
+						queue.offer(nextLocation);
 					}
 				}
-				answer = Math.max(answer, box[z][x][y]);
 			}
 		}
 	}
