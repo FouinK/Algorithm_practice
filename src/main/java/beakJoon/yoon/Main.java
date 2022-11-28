@@ -3,87 +3,73 @@ package beakJoon.yoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
 
-	static boolean[] visit;
-	static StringBuilder sb = new StringBuilder();
+	static int arr[][];
+	static boolean visit[][];
+	static int N;
+	static int M;
+	static int[] dx = {-1, 1, 0, 0};
+	static int[] dy = {0, 0, 1, -1};
+	static int max = Integer.MIN_VALUE;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		int T = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		for (int i = 0; i < T; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
 
-			int value = Integer.parseInt(st.nextToken());
-			int answer = Integer.parseInt(st.nextToken());
+		arr = new int[N][M];
+		visit = new boolean[N][M];
 
-			visit = new boolean[10000];
+		for (int i = 0; i < N; i++) {
 
-			bfs(value, answer);
-		}
-
-		System.out.println(sb);
-	}
-
-	public static void bfs(int value, int answer) {
-		Queue<Number> queue = new LinkedList<>();
-		queue.add(new Number(value, ""));
-
-		visit[value] = true;
-		while (!queue.isEmpty()) {
-			int num = queue.peek().num;
-			String word = queue.peek().word;
-
-			queue.poll();
-
-			if (num == answer) {
-				sb.append(word).append("\n");
-				return;
-			}
-
-			int D = (num * 2) % 10000;
-
-			int S = num - 1;
-
-			if (S == -1) {
-				S = 9999;
-			}
-
-			int L = (num % 1000) * 10 + num / 1000;
-
-			int R = num / 10 + (num % 10) * 1000;
-
-			if (!visit[D]) {
-				visit[D] = true;
-				queue.offer(new Number(D, word + "D"));
-			}
-			if (!visit[S]) {
-				visit[S] = true;
-				queue.offer(new Number(S, word + "S"));
-			}
-			if (!visit[L]) {
-				visit[L] = true;
-				queue.offer(new Number(L, word + "L"));
-			}
-			if (!visit[R]) {
-				visit[R] = true;
-				queue.offer(new Number(R, word + "R"));
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				visit[i][j] = true;
+				dfs(i, j, arr[i][j], 1);
+				visit[i][j] = false;
+			}
+		}
+
+		System.out.println(max);
 	}
 
-	public static class Number{
-		int num;
-		String word;
+	public static void dfs(int row, int col,int sum, int cnt) {
+		if (cnt == 4) {
+			max = Math.max(sum, max);
+			return;
+		}
 
-		public Number(int num, String word) {
-			this.num = num;
-			this.word = word;
+		for (int i = 0; i < 4; i++) {
+			int curRow = row + dx[i];
+			int curCol = col + dy[i];
+
+			if (curRow >= 0 && curRow < N && curCol >= 0 && curCol < M) {
+
+				if (!visit[curRow][curCol]) {
+
+					if (cnt == 2) {
+						visit[curRow][curCol] = true;
+						dfs(row, col, sum+arr[curRow][curCol], cnt + 1);
+						visit[curRow][curCol] = false;
+					}
+
+					visit[curRow][curCol] = true;
+					dfs(curRow, curCol, sum+arr[curRow][curCol], cnt + 1);
+					visit[curRow][curCol] = false;
+				}
+			}
 		}
 	}
 }
