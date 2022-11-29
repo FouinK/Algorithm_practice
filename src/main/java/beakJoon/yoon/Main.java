@@ -3,61 +3,67 @@ package beakJoon.yoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int[] cnt = new int[101];
-	static int[] ladderAndSnake = new int[101];
-	static boolean[] visit = new boolean[101];
+
+	static int[] arr;
+	static boolean[] visit;
+	static int[] answer;
+	static int N;
+	static int M;
+	static LinkedHashSet<String> ans;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		int ladderSize = Integer.parseInt(st.nextToken());
-		int snakeSize = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
 
+		arr = new int[N];
+		visit = new boolean[N];
+		answer = new int[M];
+		ans = new LinkedHashSet<>();
 
-		for (int i = 0; i < ladderSize+snakeSize; i++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
 
-			ladderAndSnake[a] = b;
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
 		}
-		bfs();
 
+
+		Arrays.sort(arr);
+
+		dfs(0);
+
+		StringBuilder sb = new StringBuilder();
+
+		for (String an : ans) {
+			sb.append(an).append("\n");
+		}
+
+		System.out.println(sb);
 	}
 
-	public static void bfs() {
-		Queue<Integer> queue = new LinkedList<>();
-		queue.offer(1);
-		cnt[1] = 0;
-		visit[1] = true;
-
-		while (!queue.isEmpty()) {
-			int nowLocation = queue.poll();
-			if (nowLocation == 100) {
-				System.out.println(cnt[100]);
-				return;
+	public static void dfs(int depth) {
+		if (depth == M) {
+			StringBuilder sb = new StringBuilder();
+			for (int value : answer) {
+				sb.append(value).append(" ");
 			}
+			ans.add(sb.toString());
+			return;
+		}
 
-			for (int i = 1; i < 7; i++) {
-				int nextLocation = nowLocation + i;
-				if (nextLocation < 101 && !visit[nextLocation] ) {
-					visit[nextLocation] = true;
-
-					if (ladderAndSnake[nextLocation] > 0) {
-						if (!visit[ladderAndSnake[nextLocation]]) {
-							cnt[ladderAndSnake[nextLocation]] = cnt[nowLocation] + 1;
-							visit[ladderAndSnake[nextLocation]] = true;
-							queue.offer(ladderAndSnake[nextLocation]);
-						}
-					} else {
-						cnt[nextLocation] = cnt[nowLocation] + 1;
-						queue.offer(nextLocation);
-					}
-				}
+		for (int i = 0; i < arr.length; i++) {
+			if (!visit[i]) {
+				answer[depth] = arr[i];
+				visit[i] = true;
+				dfs(depth + 1);
+				visit[i] = false;
 			}
 		}
 	}
