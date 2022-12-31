@@ -10,7 +10,8 @@ public class Main {
 
         long a = sc.nextLong();
         long b = sc.nextLong();
-        c = sc.nextInt();
+        c = sc.nextLong();
+
 
         System.out.println(pow(a,b));
     }
@@ -18,15 +19,15 @@ public class Main {
     public static long pow(long a, long zisu) {
 
         if (zisu == 1) {
-            return  a%c ;
+            return a % c;
         }
 
         long temp = pow(a, zisu / 2);
 
-        if (zisu % 2 == 0) {
-            return temp * temp % c;
+        if (zisu % 2 == 1) {
+            return (temp*temp%c) * a % c;
         }
 
-        return (temp*temp % c) * a % c;
+        return temp * temp % c;
     }
 }
