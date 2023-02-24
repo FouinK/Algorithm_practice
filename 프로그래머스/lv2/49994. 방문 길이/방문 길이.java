@@ -6,6 +6,7 @@ class Solution {
                 
         Set<String> set = new HashSet<>();
 
+                
         int i = 5;
         int j = 5;
 
@@ -13,52 +14,49 @@ class Solution {
 
             String now = String.valueOf(i) + j;
 
-            if (dirs.charAt(k) == 'U') {
+            if (dirs.charAt(i) == 'U') {
+                i += 1;
 
-                if (i == 10) {
+                if (i > 10) {
+                    i -=1;
                     continue;
                 }
 
-                i++;
+            } else if (dirs.charAt(i) == 'D') {
+                i -= 1;
 
-            } else if (dirs.charAt(k) == 'D') {
-
-                if (i == 0) {
+                if (i < -10) {
+                    i += 1;
                     continue;
                 }
 
-                i--;
+            } else if (dirs.charAt(i) == 'L') {
+                j -= 1;
 
-            } else if (dirs.charAt(k) == 'L') {
-
-                if (j == 0) {
+                if (j < -10) {
+                    j += 1;
                     continue;
                 }
-
-                j--;
 
             } else {
+                j += 1;
 
-                if (j == 10) {
+                if (j > 10) {
+                    j -= 1;
                     continue;
-
                 }
 
-                j++;
-
             }
-
             StringBuilder sb = new StringBuilder();
             String next = String.valueOf(i) + j;
 
             set.add(sb.append(now).append(next).toString());
-            
-            StringBuilder reverseSb = new StringBuilder();
-            set.add(reverseSb.append(next).append(now).toString());
-            // System.out.println(sb);
+
+            System.out.println(sb.append(now).append(next));
+
         }
 
 
-        return set.size() / 2;
+        return set.size();
     }
 }
