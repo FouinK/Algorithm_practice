@@ -1,49 +1,79 @@
 package beakJoon.yoon;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
-		String s = "abracadabra";
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
 
-		List<Character> equal = new ArrayList<>();
-		List<Character> different = new ArrayList<>();
+        while (true) {
 
-		int answer = 0;
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            String word = st.nextToken();
 
-		boolean reset = true;
+            if (word.equals(".")) {
+                System.out.println(sb);
+                return ;
+            }
 
-		for (int i = 0; i < s.length(); i++) {
+            Stack<Character> stack = new Stack<>();
+            boolean check = true;
+            for (int i = 0; i < word.length(); i++) {
 
-			if (reset) {
-				if (i == s.length() - 1) {
-					answer++;
-				}
-				equal.add(s.charAt(i));
-				reset = false;
-				continue;
-			}
+                if (word.charAt(i) == '[' || word.charAt(i) == '(' || word.charAt(i) == ']' || word.charAt(i) == ')') {
 
-			if (equal.contains(s.charAt(i))) {
-				equal.add(s.charAt(i));
-			} else {
-				different.add(s.charAt(i));
-			}
+                    if (word.charAt(i) == ']') {
 
-			if (different.size() == equal.size()) {
-				answer++;
-				equal.clear();
-				different.clear();
-				reset = true;
-			} else if (i == s.length() - 1) {
-				answer++;
-			}
+                        if (stack.isEmpty()) {
+                            check = false;
+                            break;
+                        } else if(stack.peek() == '[') {
+                            stack.pop();
+                        } else {
+                            stack.push(word.charAt(i));
+                        }
 
-		}
+                    } else if (word.charAt(i) == ')') {
 
-		System.out.println(answer);
-	}
+                        if (stack.isEmpty()) {
+                            check = false;
+                            break;
+                        } else if (stack.peek() == '(') {
+                            stack.pop();
+                        } else {
+                            stack.push(word.charAt(i));
+
+                        }
+
+                    } else {
+
+                        stack.push(word.charAt(i));
+
+                    }
+
+                }
+
+            }
+
+            if (!stack.isEmpty()) {
+                check = false;
+            }
+
+            if (check) {
+                sb.append("yes").append("\n");
+            } else {
+                sb.append("no").append("\n");
+            }
+
+        }
+
+
+    }
+
 }
