@@ -1,79 +1,36 @@
 package beakJoon.yoon;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Stack;
-import java.util.StringTokenizer;
-
 public class Main {
+	static int storey = 6665777;
+	public static void main(String[] args)   {
+		int tempStorey = storey;
+		int cnt = 0;
+		while(tempStorey>0){
+			int ext = tempStorey%10;
+			tempStorey/=10;
+			int value = 0;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
+			if(ext==5){
+				if(tempStorey%10 >=5) {
+					tempStorey++;
+					value = 10-ext;
+				}
+				else {
+					value = ext;
+				}
+			}else if(ext > 5) {
+				tempStorey++;
+				value = 10 - ext;
+			}
+			else {
+				value = ext;
+			}
 
-        while (true) {
+			cnt += value;
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            String word = st.nextToken();
+		}
 
-            if (word.equals(".")) {
-                System.out.println(sb);
-                return ;
-            }
-
-            Stack<Character> stack = new Stack<>();
-            boolean check = true;
-            for (int i = 0; i < word.length(); i++) {
-
-                if (word.charAt(i) == '[' || word.charAt(i) == '(' || word.charAt(i) == ']' || word.charAt(i) == ')') {
-
-                    if (word.charAt(i) == ']') {
-
-                        if (stack.isEmpty()) {
-                            check = false;
-                            break;
-                        } else if(stack.peek() == '[') {
-                            stack.pop();
-                        } else {
-                            stack.push(word.charAt(i));
-                        }
-
-                    } else if (word.charAt(i) == ')') {
-
-                        if (stack.isEmpty()) {
-                            check = false;
-                            break;
-                        } else if (stack.peek() == '(') {
-                            stack.pop();
-                        } else {
-                            stack.push(word.charAt(i));
-
-                        }
-
-                    } else {
-
-                        stack.push(word.charAt(i));
-
-                    }
-
-                }
-
-            }
-
-            if (!stack.isEmpty()) {
-                check = false;
-            }
-
-            if (check) {
-                sb.append("yes").append("\n");
-            } else {
-                sb.append("no").append("\n");
-            }
-
-        }
-
-
-    }
+		System.out.println(cnt);
+	}
 
 }
